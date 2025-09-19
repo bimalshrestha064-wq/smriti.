@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Remembering Smriti 🌙</title>
+<style>
+html, body {
+  margin:0; padding:0; height:100%; overflow:hidden;
+  font-family:'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ffe6f0, #f8e1f4, #fff0f5);
+  background-size: 400% 400%;
+  animation: gradientShift 60s ease infinite;
+  color: #3e2f2f;
+}
+
+@keyframes gradientShift{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.scene{
+  position:absolute; width:100%; height:100%;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  text-align:center; padding:20px;
+  opacity:0; transform:scale(0.95);
+  transition:opacity 2s ease, transform 2s ease;
+  pointer-events:none;
+}
+
+.active{opacity:1; transform:scale(1); pointer-events:auto; z-index:2;}
+
+h1{
+  font-size:3em; color:#b30059;
+  text-shadow: 1px 1px 5px #ffc0cb;
+}
+
+.typing{
+  font-size:2.2em; color:#b30059;
+  white-space:nowrap; overflow:hidden;
+  border-right:2px solid #b30059; text-shadow:0 0 5px #ffc0cb;
+  margin-bottom:30px;
+}
+
+@keyframes blink{50%{border-color:transparent;}}
+
+.heart{
+  font-size:5em; color:#ff6f91; cursor:pointer; margin-top:20px;
+  transition: all 0.3s ease; text-shadow: 0 0 15px #ff6f91;
+  position:relative; z-index:3;
+}
+.heart:hover{transform:scale(1.3); text-shadow:0 0 30px #ff6f91;}
+.heart:active{transform:scale(1.5);}
+
+.message{
+  font-size:1.4em; margin-top:20px; color:#4b2e2e;
+  opacity:0; text-shadow:0 0 5px #ffc0cb;
+  animation:floatText 3s ease-in-out forwards;
+}
+
+@keyframes floatText{
+  0%{opacity:0; transform:translateY(30px);}
+  100%{opacity:1; transform:translateY(0);}
+}
+
+.signature{margin-top:30px; font-style:italic; font-size:1.2em; color:#6c4c4c;}
+
+button{
+  margin-top:35px; padding:12px 28px; font-size:1.1em;
+  background:#b30059; color:white; border:none; border-radius:12px;
+  cursor:pointer; transition:all 0.3s ease;
+}
+button:hover{background:#8c0047; transform:scale(1.05) translateY(-2px);}
+
+.particles, .tinyHearts, .clouds{position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:1;}
+
+.particle, .cloud{
+  position:absolute; border-radius:50%; background:rgba(255,111,145,0.3); animation:floatUp linear infinite;
+}
+
+.cloud{background:rgba(255,255,255,0.1); border-radius:50%;}
+
+@keyframes floatUp{
+  0%{transform:translateY(100vh) scale(0.3); opacity:0;}
+  50%{opacity:0.7;}
+  100%{transform:translateY(-10vh) scale(1); opacity:0;}
+}
+
+.tinyHeart{
+  position:absolute; font-size:1.2em; color:#ff6f91; opacity:1;
+}
+
+@media(max-width:600px){h1{font-size:2em;} .typing{font-size:1.8em;} .heart{font-size:3em;} .message{font-size:1em;}}
+</style>
+</head>
+<body>
+
+<audio autoplay loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/08/06/audio_0f2df6a24c.mp3?filename=soft-piano-11141.mp3" type="audio/mpeg">
+</audio>
+
+<div class="particles" id="particles"></div>
+<div class="clouds" id="clouds"></div>
+<div class="tinyHearts" id="tinyHearts"></div>
+
+<div class="scene active" id="scene1">
+  <h1>Thinking of You</h1>
+  <button onclick="nextScene('scene2')">Next</button>
+</div>
+
+<div class="scene" id="scene2">
+  <div class="typing" id="typing"></div>
+  <button onclick="nextScene('scene3')">Next</button>
+</div>
+
+<div class="scene" id="scene3">
+  <div class="heart" onclick="shootHearts()">💖</div>
+  <div class="message" id="message"></div>
+  <div class="signature">— Always remembering, Bimal</div>
+</div>
+
+<script>
+function nextScene(id){
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='scene2') typeMessage();
+  if(id==='scene3') showMessage();
+}
+
+// Typing effect
+const lines=["Hi Smriti 🌙","I hope you're smiling as you read this...","I often remember our time together...","You are missed every day."];
+function typeMessage(){
+  const typing=document.getElementById("typing");
+  typing.textContent="";
+  let lineIndex=0;
+  function typeLine(){
+    if(lineIndex>=lines.length) return;
+    let chars=lines[lineIndex].split('');
+    let i=0;
+    function typeChar(){
+      if(i<chars.length){ typing.textContent+=chars[i++]; setTimeout(typeChar,80);}
+      else{lineIndex++; setTimeout(()=>{typing.textContent=''; typeLine();},800);}
+    }
+    typeChar();
+  }
+  typeLine();
+}
+
+// Show final message
+function showMessage(){
+  const msg=document.getElementById("message");
+  msg.style.opacity=1;
+  msg.innerHTML="Sometimes I close my eyes and see your smile.<br>I remember our moments, the laughter, the talks, the silence.<br>Even though we are apart, I carry you in my thoughts.<br>I miss you more than words can say.";
+}
+
+// Particles
+const particleContainer=document.getElementById("particles");
+for(let i=0;i<80;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  const size=3+Math.random()*6; p.style.width=p.style.height=size+"px";
+  p.style.left=Math.random()*100+"vw"; p.style.top=Math.random()*100+"vh";
+  p.style.animationDuration=10+Math.random()*10+"s";
+  particleContainer.appendChild(p);
+}
+
+// Clouds
+const cloudContainer=document.getElementById("clouds");
+for(let i=0;i<15;i++){
+  const c=document.createElement("div"); c.className="cloud";
+  const size=80+Math.random()*120; c.style.width=c.style.height=size+"px";
+  c.style.left=Math.random()*100+"vw"; c.style.top=Math.random()*100+"vh";
+  c.style.animationDuration=50+Math.random()*20+"s";
+  cloudContainer.appendChild(c);
+}
+
+// Tiny heart effect
+const tinyHeartsContainer=document.getElementById("tinyHearts");
+function shootHearts(){
+  for(let i=0;i<20;i++){
+    const h=document.createElement("div");
+    h.className="tinyHeart"; h.textContent="💖";
+    h.style.left=50+Math.random()*60-30+"vw"; h.style.top="80vh";
+    h.style.fontSize=(10+Math.random()*15)+"px"; tinyHeartsContainer.appendChild(h);
+    animateHeart(h);
+  }
+}
+function animateHeart(h){
+  let top=parseFloat(h.style.top); let opacity=1;
+  let id=setInterval(()=>{
+    top-=2; opacity-=0.02;
+    h.style.top=top+"px"; h.style.opacity=opacity;
+    if(top<0||opacity<=0){ h.remove(); clearInterval(id);}
+  },20);
+}
+</script>
+</body>
+</html>
